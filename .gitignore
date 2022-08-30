@@ -2,3 +2,6 @@ src/KafkaCSharpIntegrationTests/.idea/
 src/KafkaCSharpIntegrationTests/OrdersService/bin/Debug/net6.0/OrdersService.deps.json
 src/KafkaCSharpIntegrationTests/OrdersService/bin/
 src/KafkaCSharpIntegrationTests/OrdersService/obj/
+src/SamApi/.idea/
+src/SamApi/HelloWorld/src/HelloWorld/bin/
+src/SamApi/HelloWorld/src/HelloWorld/obj/

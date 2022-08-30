@@ -6,9 +6,9 @@ namespace OrdersService;
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult<string>> Get()
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] Order order)
     {
-        return await Task.FromResult(Ok("hui"));
+        return await Task.FromResult(Ok());
     }
 }
