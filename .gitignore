@@ -5,3 +5,4 @@ src/KafkaCSharpIntegrationTests/OrdersService/obj/
 src/SamApi/.idea/
 src/SamApi/HelloWorld/src/HelloWorld/bin/
 src/SamApi/HelloWorld/src/HelloWorld/obj/
+src/KafkaCSharpIntegrationTests/OrdersService.Tests/obj/

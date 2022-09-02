@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersService", "OrdersService\OrdersService.csproj", "{1A4B1B8B-02FA-47E8-9D73-6AB61246E8DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersService.Tests", "OrdersService.Tests\OrdersService.Tests.csproj", "{DCBC17E8-7661-43E4-9267-E39F95B812F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{1A4B1B8B-02FA-47E8-9D73-6AB61246E8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A4B1B8B-02FA-47E8-9D73-6AB61246E8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A4B1B8B-02FA-47E8-9D73-6AB61246E8DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCBC17E8-7661-43E4-9267-E39F95B812F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCBC17E8-7661-43E4-9267-E39F95B812F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCBC17E8-7661-43E4-9267-E39F95B812F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCBC17E8-7661-43E4-9267-E39F95B812F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
