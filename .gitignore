@@ -6,3 +6,5 @@ src/SamApi/.idea/
 src/SamApi/HelloWorld/src/HelloWorld/bin/
 src/SamApi/HelloWorld/src/HelloWorld/obj/
 src/KafkaCSharpIntegrationTests/OrdersService.Tests/obj/
+src/KafkaCSharpIntegrationTests/OrdersService.Tests/bin/
+src/KafkaCSharpIntegrationTests/KafkaCSharpIntegrationTests.sln.DotSettings.user

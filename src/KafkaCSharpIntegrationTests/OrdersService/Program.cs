@@ -3,7 +3,7 @@ using Confluent.Kafka.Admin;
 
 namespace OrdersService;
 
-internal class Program
+public class Program
 {
     public static async Task Main(string[] args)
     {
