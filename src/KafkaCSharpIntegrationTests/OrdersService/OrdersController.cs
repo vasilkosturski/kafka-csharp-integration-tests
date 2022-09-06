@@ -1,5 +1,4 @@
-﻿using Confluent.Kafka;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace OrdersService;
 
@@ -7,17 +6,18 @@ namespace OrdersService;
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
 {
-    private readonly IProducer<Null, Order> producer;
-    
-    public OrdersController(OrdersProducerFactory producerFactory)
+    private readonly ProducerFactory producerFactory;
+
+    public OrdersController(ProducerFactory producerFactory)
     {
-        producer = producerFactory.Get();
+        this.producerFactory = producerFactory;
     }
     
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Order order)
     {
-        await producer.ProduceAsync("orders", new Message<Null, Order> { Value = order });
+        var producer = producerFactory.Get<Order>();
+        await producer.ProduceAsync(order);
         return await Task.FromResult(Ok());
     }
 }
