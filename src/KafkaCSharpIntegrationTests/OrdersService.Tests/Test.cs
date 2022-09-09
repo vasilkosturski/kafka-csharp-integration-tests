@@ -6,26 +6,18 @@ using System.Threading.Tasks;
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace OrdersService.Tests;
 
-public class Test : IClassFixture<WebApplicationFactory<Program>>
+public class Test
 {
-    private readonly WebApplicationFactory<Program> factory;
-
-    public Test(WebApplicationFactory<Program> factory)
-    {
-        this.factory = factory;
-    }
-    
     [Theory]
-    [InlineData("/api/orders")]
-    public async Task OrdersTest(string url)
+    [Conventions]
+    public async Task OrdersTest(HttpClient client)
     {
         // Arrange
-        var client = factory.CreateClient();
+        //var client = factory.CreateClient();
         
         await CreateKafkaTopic();
         
@@ -39,7 +31,7 @@ public class Test : IClassFixture<WebApplicationFactory<Program>>
         
         // Act
         
-        var response = await client.PostAsync(url, new StringContent(ser, Encoding.UTF8, "application/json"));
+        var response = await client.PostAsync("/api/Orders", new StringContent(ser, Encoding.UTF8, "application/json"));
         
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
@@ -57,7 +49,7 @@ public class Test : IClassFixture<WebApplicationFactory<Program>>
         {
             consumer.Subscribe("orders");
 
-            var res = consumer.Consume(TimeSpan.FromMilliseconds(1));
+            var res = consumer.Consume(TimeSpan.FromSeconds(10));
 
             res.Message.Value.Id.Should().Be(order.Id);
             res.Message.Value.Price.Should().Be(order.Price);
