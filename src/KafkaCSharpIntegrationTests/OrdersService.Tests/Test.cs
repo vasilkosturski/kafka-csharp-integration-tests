@@ -31,7 +31,7 @@ public class Test
         
         // Act
         
-        var response = await client.PostAsync("/api/Orders", new StringContent(ser, Encoding.UTF8, "application/json"));
+        var response = await client.PostAsync("/api/orders", new StringContent(ser, Encoding.UTF8, "application/json"));
         
         // Assert
         response.EnsureSuccessStatusCode(); // Status Code 200-299
