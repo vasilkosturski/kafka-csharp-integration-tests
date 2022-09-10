@@ -10,16 +10,19 @@ namespace OrdersService.Tests;
 public class CustomWebApplicationFactory<TStartup>
     : WebApplicationFactory<TStartup> where TStartup: class
 {
-    private readonly Fixture fixture = new();
+    private readonly IFixture fixture;
 
+    public CustomWebApplicationFactory(IFixture fixture)
+    {
+        this.fixture = fixture;
+    }
+    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
         {
-            services.AddSingleton(new Dictionary<Type, string>
-            {
-                { typeof(Order), $"orders-{fixture.Create<string>()}" }
-            });
+            var topicNameMap = fixture.Create<Dictionary<Type, string>>();
+            services.AddSingleton(topicNameMap);
         });
     }
 }
