@@ -9,7 +9,7 @@ using Xunit;
 
 namespace OrdersService.Tests;
 
-public class Test
+public class Test : IAsyncLifetime
 {
     [Theory]
     [Conventions]
@@ -29,5 +29,14 @@ public class Test
         res.Message.Value.Product.Should().Be(order.Product);
     }
 
-    
+
+    public Task InitializeAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
+    }
 }
