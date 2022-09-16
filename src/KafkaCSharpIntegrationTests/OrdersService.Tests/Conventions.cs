@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
@@ -9,6 +11,8 @@ using Confluent.Kafka.Admin;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Nito.AsyncEx;
 
 namespace OrdersService.Tests;
@@ -50,32 +54,50 @@ public class ConfigureTestContainers : ICustomization
         
         var zookeeperHostPort = zookeeperContainer.GetMappedPublicPort(2181);
 
+        // UseAvailablePort
+
+        var hostPort = GetAvailablePort();
         var kafkaContainerName = $"kafka_{fixture.Create<string>()}"; 
         var kafkaContainer = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage("confluentinc/cp-kafka:7.0.1")
             .WithName(kafkaContainerName)
-            //.WithPortBinding(9092, true)
-            .WithPortBinding(9092)
+            //.WithPortBinding(9092, 0)
+            .WithPortBinding(9092, hostPort)
+            //.WithPortBinding(9092)
             .WithEnvironment(new Dictionary<string, string>
             {
                 {"KAFKA_BROKER_ID", "1"},
                 {"KAFKA_ZOOKEEPER_CONNECT", $"host.docker.internal:{zookeeperHostPort}"},
-                {"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP", "PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT"},
-                {"KAFKA_ADVERTISED_LISTENERS", "PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092"},
+                {"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP", "INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT"},
+                //{"KAFKA_ADVERTISED_LISTENERS", "PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092"},
+                {"KAFKA_LISTENERS", $"INTERNAL://0.0.0.0:9092,OUTSIDE://0.0.0.0:{hostPort}"},
+                //{"KAFKA_ADVERTISED_LISTENERS", $"INTERNAL://{kafkaContainerName}:9092,OUTSIDE://localhost:{hostPort}"},
+                {"KAFKA_ADVERTISED_LISTENERS", $"INTERNAL://{kafkaContainerName}:9092,OUTSIDE://localhost:{hostPort}"},
+                {"KAFKA_INTER_BROKER_LISTENER_NAME", "INTERNAL"},
+                //{"KAFKA_ADVERTISED_LISTENERS", $"PLAINTEXT://localhost:{hostPort},PLAINTEXT_INTERNAL://broker:29092"},
                 {"KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR", "1"},
                 {"KAFKA_TRANSACTION_STATE_LOG_MIN_ISR", "1"},
                 {"KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR", "1"},
             })
             .WithOutputConsumer(new OutputConsumer())
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(9092))
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(hostPort))
             .Build();
-        
+
         AsyncContext.Run(async () => await kafkaContainer.StartAsync());
         
         fixture.Inject(new ContainersConfig
         {
-            KafkaHostPort = kafkaContainer.GetMappedPublicPort(9092)
+            KafkaHostPort = hostPort
         });
+    }
+    
+    private static readonly IPEndPoint defaultLoopbackEndpoint = new(IPAddress.Loopback, 0);
+    public static int GetAvailablePort()
+    {
+        using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        socket.Bind(defaultLoopbackEndpoint);
+        var port = ((IPEndPoint)socket.LocalEndPoint)!.Port;
+        return port;
     }
 }
 
