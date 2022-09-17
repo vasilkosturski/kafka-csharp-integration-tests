@@ -56,7 +56,8 @@ public class ConfigureTestContainers : ICustomization
 
         // UseAvailablePort
 
-        var hostPort = GetAvailablePort();
+        //var hostPort = GetAvailablePort();
+        var hostPort = 9092;
         var kafkaContainerName = $"kafka_{fixture.Create<string>()}"; 
         var kafkaContainer = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage("confluentinc/cp-kafka:7.0.1")
@@ -66,13 +67,8 @@ public class ConfigureTestContainers : ICustomization
             {
                 {"KAFKA_BROKER_ID", "1"},
                 {"KAFKA_ZOOKEEPER_CONNECT", $"host.docker.internal:{zookeeperHostPort}"},
-                {"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP", "INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT"},
-                //{"KAFKA_ADVERTISED_LISTENERS", "PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092"},
-                {"KAFKA_LISTENERS", $"INTERNAL://0.0.0.0:9092,OUTSIDE://0.0.0.0:{hostPort}"},
-                //{"KAFKA_ADVERTISED_LISTENERS", $"INTERNAL://{kafkaContainerName}:9092,OUTSIDE://localhost:{hostPort}"},
-                {"KAFKA_ADVERTISED_LISTENERS", $"INTERNAL://{kafkaContainerName}:9092,OUTSIDE://localhost:{hostPort}"},
-                {"KAFKA_INTER_BROKER_LISTENER_NAME", "INTERNAL"},
-                //{"KAFKA_ADVERTISED_LISTENERS", $"PLAINTEXT://localhost:{hostPort},PLAINTEXT_INTERNAL://broker:29092"},
+                {"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP", "PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT"},
+                {"KAFKA_ADVERTISED_LISTENERS", $"PLAINTEXT://localhost:{hostPort},PLAINTEXT_INTERNAL://{kafkaContainerName}:29092"},
                 {"KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR", "1"},
                 {"KAFKA_TRANSACTION_STATE_LOG_MIN_ISR", "1"},
                 {"KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR", "1"},
