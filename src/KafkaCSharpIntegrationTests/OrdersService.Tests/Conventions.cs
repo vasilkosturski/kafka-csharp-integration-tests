@@ -61,9 +61,7 @@ public class ConfigureTestContainers : ICustomization
         var kafkaContainer = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage("confluentinc/cp-kafka:7.0.1")
             .WithName(kafkaContainerName)
-            //.WithPortBinding(9092, 0)
-            .WithPortBinding(9092, hostPort)
-            //.WithPortBinding(9092)
+            .WithPortBinding(hostPort, 9092)
             .WithEnvironment(new Dictionary<string, string>
             {
                 {"KAFKA_BROKER_ID", "1"},
