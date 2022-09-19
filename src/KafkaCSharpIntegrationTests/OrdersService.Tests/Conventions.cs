@@ -56,20 +56,20 @@ public class ConfigureTestContainers : ICustomization
 
         // UseAvailablePort
 
-        //var hostPort = GetAvailablePort();
-        var hostPort = 9092;
+        var hostPort = GetAvailablePort();
+        //var hostPort = 9092;
         var kafkaContainerName = $"kafka_{fixture.Create<string>()}"; 
         var kafkaContainer = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage("confluentinc/cp-kafka:7.0.1")
             .WithName(kafkaContainerName)
             .WithHostname(kafkaContainerName)
-            .WithPortBinding(hostPort, hostPort)
+            .WithPortBinding(hostPort, 9092)
             .WithEnvironment(new Dictionary<string, string>
             {
                 {"KAFKA_BROKER_ID", "1"},
                 {"KAFKA_ZOOKEEPER_CONNECT", $"host.docker.internal:{zookeeperHostPort}"},
                 {"KAFKA_LISTENER_SECURITY_PROTOCOL_MAP", "PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT"},
-                {"KAFKA_LISTENERS", $"PLAINTEXT://0.0.0.0:{hostPort},PLAINTEXT_INTERNAL://0.0.0.0:29092"},
+                {"KAFKA_LISTENERS", $"PLAINTEXT://{kafkaContainerName}:9092,PLAINTEXT_INTERNAL://{kafkaContainerName}:29092"},
                 {"KAFKA_ADVERTISED_LISTENERS", $"PLAINTEXT://localhost:{hostPort},PLAINTEXT_INTERNAL://{kafkaContainerName}:29092"},
                 {"KAFKA_INTER_BROKER_LISTENER_NAME", "PLAINTEXT_INTERNAL"},
                 {"KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR", "1"},
