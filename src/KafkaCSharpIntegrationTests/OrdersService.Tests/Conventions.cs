@@ -20,8 +20,8 @@ public class Conventions : AutoDataAttribute
     public Conventions() : base(() => new Fixture()
         .Customize(new ConfigureTestContainers())
         .Customize(new ConfigureTopics())
-        .Customize(new ConfigureTestServer())
-        .Customize(new ConfigureKafkaConsumer()))
+        .Customize(new ConfigureKafkaConsumer())
+        .Customize(new ConfigureTestServer()))
     {
     }
 }
@@ -53,13 +53,15 @@ public class ConfigureTestContainers : ICustomization
         var zookeeperHostPort = zookeeperContainer.GetMappedPublicPort(2181);
 
         // UseAvailablePort
-
+        
+        //var hostPort = 50000;
         var hostPort = GetAvailablePort();
         var kafkaContainerName = $"kafka_{fixture.Create<string>()}"; 
         var kafkaContainer = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage("confluentinc/cp-kafka:7.0.1")
             .WithName(kafkaContainerName)
             .WithHostname(kafkaContainerName)
+            //.WithPortBinding(hostPort, hostPort)
             .WithPortBinding(hostPort, 9092)
             .WithEnvironment(new Dictionary<string, string>
             {

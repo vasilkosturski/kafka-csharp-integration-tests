@@ -18,6 +18,6 @@ public class OrdersController : ControllerBase
     {
         var producer = producerFactory.Get<Order>();
         await producer.ProduceAsync(order);
-        return await Task.FromResult(Ok());
+        return Ok();
     }
 }

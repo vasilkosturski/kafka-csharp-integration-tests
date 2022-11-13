@@ -15,7 +15,9 @@ public class Program
         });
 
         var app = builder.Build();
+        
         app.MapControllers();
+        
         await app.RunAsync();
     }
 }
