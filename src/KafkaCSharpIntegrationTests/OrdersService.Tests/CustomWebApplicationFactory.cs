@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoFixture;
+﻿using AutoFixture;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,8 +19,11 @@ public class CustomWebApplicationFactory<TStartup>
     {
         builder.ConfigureServices(services =>
         {
-            var topicNameMap = fixture.Create<Dictionary<Type, string>>();
-            services.AddSingleton(topicNameMap);
+            var containersConfig = fixture.Create<ContainersConfig>();
+            services.Configure<KafkaOptions>(opts =>
+            {
+                opts.BootstrapServers = $"localhost:{containersConfig.KafkaHostPort}";
+            });
         });
     }
 }

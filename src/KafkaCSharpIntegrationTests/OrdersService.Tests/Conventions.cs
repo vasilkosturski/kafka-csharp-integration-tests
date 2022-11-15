@@ -19,7 +19,6 @@ public class Conventions : AutoDataAttribute
 {
     public Conventions() : base(() => new Fixture()
         .Customize(new ConfigureTestContainers())
-        .Customize(new ConfigureTopics())
         .Customize(new ConfigureKafkaConsumer())
         .Customize(new ConfigureTestServer()))
     {
@@ -110,17 +109,6 @@ public class OutputConsumer : IOutputConsumer
     public Stream Stderr => Console.OpenStandardOutput();
 }
 
-public class ConfigureTopics : ICustomization
-{
-    public void Customize(IFixture fixture)
-    {
-        fixture.Inject(new Dictionary<Type, string>
-        {
-            { typeof(Order), $"orders-{fixture.Create<string>()}" }
-        });
-    }
-}
-
 public class ConfigureTestServer : ICustomization
 {
     public void Customize(IFixture fixture)
@@ -148,10 +136,9 @@ public class ConfigureKafkaConsumer : ICustomization
         var consumer = new ConsumerBuilder<Null, Order>(config)
             .SetValueDeserializer(new CustomValueDeserializer<Order>())
             .Build();
-        
-        var topicNameMap = fixture.Create<Dictionary<Type, string>>();
-        var topicName = topicNameMap[typeof(Order)];
 
+        var topicName = "orders";
+        
         AsyncContext.Run(async () => await CreateKafkaTopic(topicName, bootstrapServers));
 
         consumer.Subscribe(topicName);

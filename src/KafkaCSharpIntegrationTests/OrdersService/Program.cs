@@ -13,6 +13,8 @@ public class Program
         {
             { typeof(Order), "orders" }
         });
+        
+        builder.Services.Configure<KafkaOptions>(builder.Configuration);
 
         var app = builder.Build();
         
@@ -20,4 +22,10 @@ public class Program
         
         await app.RunAsync();
     }
+}
+
+public class KafkaOptions
+{
+    public string BootstrapServers { get; set; }
+    public string OrdersTopicName { get; set; }
 }
