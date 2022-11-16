@@ -129,7 +129,7 @@ public class ConfigureKafkaConsumer : ICustomization
         };
         
         var consumer = new ConsumerBuilder<Null, Order>(config)
-            .SetValueDeserializer(new CustomValueDeserializer<Order>())
+            .SetValueDeserializer(new JsonDeserializer<Order>())
             .Build();
 
         var topicName = "orders";

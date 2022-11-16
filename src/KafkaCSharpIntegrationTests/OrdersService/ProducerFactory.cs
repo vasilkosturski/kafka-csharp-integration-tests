@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using Microsoft.Extensions.Options;
 
 namespace OrdersService;
@@ -28,7 +27,7 @@ public class ProducerFactory
                 var bootstrapServers = kafkaOptions.Value.BootstrapServers;
                 var config = new ProducerConfig { BootstrapServers = bootstrapServers };
                 var kafkaProducer = new ProducerBuilder<Null, T>(config)
-                    .SetValueSerializer(new CustomValueSerializer<T>())
+                    .SetValueSerializer(new JsonSerializer<T>())
                     .Build();
                 var producer = new Producer<T>(kafkaProducer, topicName);
                 producers.Add(typeof(T), producer);
@@ -58,31 +57,6 @@ public class Producer<T> : IProducer<T>
     public async Task ProduceAsync(T message)
     {
         await kafkaProducer.ProduceAsync(topicName, new Message<Null, T> { Value = message });
-    }
-}
-
-public class CustomValueSerializer<T> : ISerializer<T>
-{
-    public byte[] Serialize(T data, SerializationContext context)
-    {
-        using var ms = new MemoryStream();
-        
-        var jsonString = JsonSerializer.Serialize(data);
-        var writer = new StreamWriter(ms);
-
-        writer.Write(jsonString);
-        writer.Flush();
-        ms.Position = 0;
-
-        return ms.ToArray();
-    }
-}
-
-public class CustomValueDeserializer<T> : IDeserializer<T>
-{
-    public T Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
-    {
-        return JsonSerializer.Deserialize<T>(data.ToArray());
     }
 }
 
