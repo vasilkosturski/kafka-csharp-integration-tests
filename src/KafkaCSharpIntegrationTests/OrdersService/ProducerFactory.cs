@@ -17,7 +17,7 @@ public class ProducerFactory
         this.kafkaOptions = kafkaOptions;
     }
     
-    public IProducer<T> Get<T>()
+    public Producer<T> Get<T>()
     {
         lock (lockHandle)
         {
@@ -33,30 +33,7 @@ public class ProducerFactory
                 producers.Add(typeof(T), producer);
             }
 
-            return (IProducer<T>)producers[typeof(T)];
+            return (Producer<T>)producers[typeof(T)];
         }
     }
 }
-
-public interface IProducer<in T>
-{
-    Task ProduceAsync(T message);
-}
-
-public class Producer<T> : IProducer<T>
-{
-    private readonly IProducer<Null, T> kafkaProducer;
-    private readonly string topicName;
-
-    public Producer(IProducer<Null, T> kafkaProducer, string topicName)
-    {
-        this.kafkaProducer = kafkaProducer;
-        this.topicName = topicName;
-    }
-    
-    public async Task ProduceAsync(T message)
-    {
-        await kafkaProducer.ProduceAsync(topicName, new Message<Null, T> { Value = message });
-    }
-}
-
