@@ -9,11 +9,11 @@ using Xunit;
 
 namespace OrdersService.Tests;
 
-public class Test : IAsyncLifetime
+public class OrdersControllerShould
 {
     [Theory]
-    [Conventions]
-    public async Task OrdersTest(HttpClient client, IConsumer<Null, Order> consumer, Order order)
+    [TestSetup]
+    public async Task PushOrderToKafka(HttpClient client, IConsumer<Null, Order> consumer, Order order)
     {
         // Act
         var response = await client.PostAsync("/api/orders", 
@@ -27,16 +27,5 @@ public class Test : IAsyncLifetime
         res.Message.Value.Id.Should().Be(order.Id);
         res.Message.Value.Price.Should().Be(order.Price);
         res.Message.Value.Product.Should().Be(order.Product);
-    }
-
-
-    public Task InitializeAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
     }
 }
