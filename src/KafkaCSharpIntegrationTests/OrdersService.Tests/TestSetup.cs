@@ -68,7 +68,7 @@ public class ConfigureTestContainers : ICustomization
                 {"KAFKA_INTER_BROKER_LISTENER_NAME", "PLAINTEXT_INTERNAL"},
                 {"KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR", "1"},
                 {"KAFKA_TRANSACTION_STATE_LOG_MIN_ISR", "1"},
-                {"KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR", "1"},
+                {"KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR", "1"}
             })
             .WithOutputConsumer(new OutputConsumer())
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(9092))
