@@ -10,11 +10,9 @@ public class CustomWebApplicationFactory<TStartup>
 {
     private readonly IFixture fixture;
 
-    public CustomWebApplicationFactory(IFixture fixture)
-    {
+    public CustomWebApplicationFactory(IFixture fixture) =>
         this.fixture = fixture;
-    }
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>

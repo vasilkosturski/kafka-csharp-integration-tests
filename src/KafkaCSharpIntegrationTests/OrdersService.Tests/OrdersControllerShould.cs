@@ -22,7 +22,7 @@ public class OrdersControllerShould
         // Assert
         response.EnsureSuccessStatusCode();
         
-        var consumeResult = consumer.Consume(TimeSpan.FromSeconds(10));
+        var consumeResult = consumer.Consume(TimeSpan.FromSeconds(5));
         var consumedOrder = JsonSerializer.Deserialize<Order>(consumeResult.Message.Value);
         
         consumedOrder.Id.Should().Be(order.Id);

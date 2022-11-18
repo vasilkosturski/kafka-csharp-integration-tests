@@ -22,9 +22,3 @@ public class Program
         await app.RunAsync();
     }
 }
-
-public class KafkaOptions
-{
-    public string BootstrapServers { get; set; }
-    public string OrdersTopicName { get; set; }
-}
