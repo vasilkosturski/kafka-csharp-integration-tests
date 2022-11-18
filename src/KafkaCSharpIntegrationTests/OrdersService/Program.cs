@@ -7,8 +7,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddControllers();
 
-        builder.Services.AddSingleton<ProducerFactory>();
-
+        builder.Services.AddSingleton<IKafkaProducer, KafkaProducer>();
         builder.Services.AddSingleton(new Dictionary<Type, string>
         {
             { typeof(Order), "orders" }

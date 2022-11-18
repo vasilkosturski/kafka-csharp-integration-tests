@@ -82,12 +82,14 @@ public class ConfigureTestContainers : ICustomization
         });
     }
     
-    private static readonly IPEndPoint defaultLoopbackEndpoint = new(IPAddress.Loopback, 0);
-    public static int GetAvailablePort()
+    private static int GetAvailablePort()
     {
+        IPEndPoint defaultLoopbackEndpoint = new(IPAddress.Loopback, 0);
+        
         using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         socket.Bind(defaultLoopbackEndpoint);
         var port = ((IPEndPoint)socket.LocalEndPoint)!.Port;
+        
         return port;
     }
 }
@@ -128,8 +130,7 @@ public class ConfigureKafkaConsumer : ICustomization
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
         
-        var consumer = new ConsumerBuilder<Null, Order>(config)
-            .SetValueDeserializer(new JsonDeserializer<Order>())
+        var consumer = new ConsumerBuilder<Null, string>(config)
             .Build();
 
         var topicName = "orders";

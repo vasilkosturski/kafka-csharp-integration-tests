@@ -13,7 +13,7 @@ public class OrdersControllerShould
 {
     [Theory]
     [TestSetup]
-    public async Task PushOrderToKafka(HttpClient client, IConsumer<Null, Order> consumer, Order order)
+    public async Task PushOrderToKafka(HttpClient client, IConsumer<Null, string> consumer, Order order)
     {
         // Act
         var response = await client.PostAsync("/api/orders", 
@@ -22,10 +22,11 @@ public class OrdersControllerShould
         // Assert
         response.EnsureSuccessStatusCode();
         
-        var res = consumer.Consume(TimeSpan.FromSeconds(10));
-
-        res.Message.Value.Id.Should().Be(order.Id);
-        res.Message.Value.Price.Should().Be(order.Price);
-        res.Message.Value.Product.Should().Be(order.Product);
+        var consumeResult = consumer.Consume(TimeSpan.FromSeconds(10));
+        var consumedOrder = JsonSerializer.Deserialize<Order>(consumeResult.Message.Value);
+        
+        consumedOrder.Id.Should().Be(order.Id);
+        consumedOrder.Price.Should().Be(order.Price);
+        consumedOrder.Product.Should().Be(order.Product);
     }
 }

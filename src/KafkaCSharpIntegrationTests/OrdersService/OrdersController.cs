@@ -6,18 +6,15 @@ namespace OrdersService;
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
 {
-    private readonly ProducerFactory producerFactory;
+    private readonly IKafkaProducer producer;
 
-    public OrdersController(ProducerFactory producerFactory)
-    {
-        this.producerFactory = producerFactory;
-    }
-    
+    public OrdersController(IKafkaProducer producer) =>
+        this.producer = producer;
+
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Order order)
     {
-        var producer = producerFactory.Get<Order>();
-        await producer.ProduceAsync(order);
+        await producer.Produce(order);
         return Ok();
     }
 }
