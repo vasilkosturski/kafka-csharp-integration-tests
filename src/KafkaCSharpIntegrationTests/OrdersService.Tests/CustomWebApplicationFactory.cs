@@ -17,10 +17,10 @@ public class CustomWebApplicationFactory<TStartup>
     {
         builder.ConfigureServices(services =>
         {
-            var containersConfig = fixture.Create<ContainersConfig>();
+            var kafkaConfig = fixture.Create<KafkaConfig>();
             services.Configure<KafkaOptions>(opts =>
             {
-                opts.BootstrapServers = $"localhost:{containersConfig.KafkaHostPort}";
+                opts.BootstrapServers = kafkaConfig.BootstrapServers;
             });
         });
     }

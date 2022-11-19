@@ -12,7 +12,7 @@ namespace OrdersService.Tests;
 public class OrdersControllerShould
 {
     [Theory]
-    [TestSetup]
+    [OrdersControllerSetup]
     public async Task PushOrderToKafka(HttpClient client, IConsumer<Null, string> consumer, Order order)
     {
         // Act
