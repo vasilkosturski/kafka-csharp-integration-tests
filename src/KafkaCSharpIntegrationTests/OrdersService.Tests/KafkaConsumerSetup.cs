@@ -8,7 +8,7 @@ public class KafkaConsumerSetup : ICustomization
 {
     public void Customize(IFixture fixture)
     {
-        var kafkaConfig = fixture.Create<KafkaConfig>();
+        var kafkaConfig = fixture.Create<KafkaTestConfig>();
 
         var config = new ConsumerConfig
         {

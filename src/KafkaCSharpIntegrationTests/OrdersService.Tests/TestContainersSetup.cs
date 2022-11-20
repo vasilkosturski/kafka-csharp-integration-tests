@@ -56,12 +56,12 @@ public class TestContainersSetup : ICustomization
 
         AsyncContext.Run(async () => await kafkaContainer.StartAsync());
         
-        const string topicName = "orders";
+        var topicName = $"orders_{fixture.Create<string>()}";
         var bootstrapServers = $"localhost:{kafkaHostPort}";
         
         AsyncContext.Run(async () => await CreateKafkaTopic(topicName, bootstrapServers));
         
-        fixture.Inject(new KafkaConfig
+        fixture.Inject(new KafkaTestConfig
         {
             TopicName = topicName,
             BootstrapServers = bootstrapServers

@@ -6,29 +6,25 @@ namespace OrdersService;
 
 public interface IKafkaProducer : IDisposable
 {
-    public Task Produce<TMessage>(TMessage message);
+    public Task Produce<TMessage>(string topic, TMessage message);
 }
 
 public class KafkaProducer : IKafkaProducer
 {
-    private readonly Dictionary<Type, string> topicNameMap;
     private readonly IProducer<Null, string> kafkaProducer;
     
     private int disposed;
 
-    public KafkaProducer(Dictionary<Type, string> topicNameMap, IOptions<KafkaOptions> kafkaOptions)
+    public KafkaProducer(IOptions<KafkaOptions> kafkaOptions)
     {
-        this.topicNameMap = topicNameMap;
         var bootstrapServers = kafkaOptions.Value.BootstrapServers;
         var config = new ProducerConfig { BootstrapServers = bootstrapServers };
         
-        kafkaProducer = new ProducerBuilder<Null, string>(config)
-            .Build();
+        kafkaProducer = new ProducerBuilder<Null, string>(config).Build();
     }
     
-    public async Task Produce<TMessage>(TMessage message)
+    public async Task Produce<TMessage>(string topic, TMessage message)
     {
-        var topic = topicNameMap[typeof(TMessage)];
         await kafkaProducer.ProduceAsync(topic, new Message<Null, string>
         {
             Value = JsonSerializer.Serialize(message)

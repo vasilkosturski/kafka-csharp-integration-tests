@@ -5,22 +5,21 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace OrdersService.Tests;
 
-public class CustomWebApplicationFactory<TStartup>
-    : WebApplicationFactory<TStartup> where TStartup: class
+public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup: class
 {
     private readonly IFixture fixture;
 
-    public CustomWebApplicationFactory(IFixture fixture) =>
-        this.fixture = fixture;
+    public CustomWebApplicationFactory(IFixture fixture) => this.fixture = fixture;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
         {
-            var kafkaConfig = fixture.Create<KafkaConfig>();
+            var kafkaTestConfig = fixture.Create<KafkaTestConfig>();
             services.Configure<KafkaOptions>(opts =>
             {
-                opts.BootstrapServers = kafkaConfig.BootstrapServers;
+                opts.OrdersTopicName = kafkaTestConfig.TopicName;
+                opts.BootstrapServers = kafkaTestConfig.BootstrapServers;
             });
         });
     }
