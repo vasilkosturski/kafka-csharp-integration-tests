@@ -17,9 +17,7 @@ public class KafkaProducer : IKafkaProducer
 
     public KafkaProducer(IOptions<KafkaOptions> kafkaOptions)
     {
-        var bootstrapServers = kafkaOptions.Value.BootstrapServers;
-        var config = new ProducerConfig { BootstrapServers = bootstrapServers };
-        
+        var config = new ProducerConfig { BootstrapServers = kafkaOptions.Value.BootstrapServers };
         kafkaProducer = new ProducerBuilder<Null, string>(config).Build();
     }
     
