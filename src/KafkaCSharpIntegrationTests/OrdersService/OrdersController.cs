@@ -17,7 +17,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Order order)
+    public async Task<IActionResult> CreateOrder([FromBody] Order order)
     {
         await producer.Produce(kafkaOptions.Value.OrdersTopicName, order);
         return Ok();

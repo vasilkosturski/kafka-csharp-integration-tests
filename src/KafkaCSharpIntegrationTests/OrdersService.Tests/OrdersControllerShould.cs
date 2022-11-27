@@ -24,9 +24,7 @@ public class OrdersControllerShould
         
         var consumeResult = consumer.Consume(TimeSpan.FromSeconds(5));
         var consumedOrder = JsonSerializer.Deserialize<Order>(consumeResult.Message.Value);
-        
-        consumedOrder.Id.Should().Be(order.Id);
-        consumedOrder.Price.Should().Be(order.Price);
-        consumedOrder.Product.Should().Be(order.Product);
+
+        consumedOrder.Should().BeEquivalentTo(order);
     }
 }
